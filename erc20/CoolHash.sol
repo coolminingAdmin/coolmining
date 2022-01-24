@@ -7,10 +7,10 @@ contract CoolHash is ERC20, Ownable {
         _mint(initialHolder_, initialSupply_);
     }
 
-    function mint(address account, uint256 amount) public onlyOwner {
+    function mint(address account, uint256 amount) external onlyOwner {
         _mint(account, amount);
     }
-    function burn(address account, uint256 amount) public onlyOwner {
+    function burn(address account, uint256 amount) external onlyOwner {
         _burn(account, amount);
     }
 }

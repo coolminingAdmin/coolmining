@@ -16,7 +16,7 @@ interface ICoolControlBoard {
     function mint(
         address to,
         uint8 rarity
-    ) external returns(uint);
+    ) external returns(uint, uint128);
 
     function getTokensByIds(uint[] calldata _tokenIds) external view returns (TokensViewFront[] memory);
 

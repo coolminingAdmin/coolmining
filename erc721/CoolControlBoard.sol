@@ -81,11 +81,20 @@ contract CoolControlBoard is
         return interfaceId == type(IERC721EnumerableUpgradeable).interfaceId || super.supportsInterface(interfaceId);
     }
 
+//    function fix(uint max) external onlyRole(DEFAULT_ADMIN_ROLE) {
+//        for(uint i = 0; i < max; i++){
+//            Token storage token = _tokens[i];
+//            if (token.mainProp < 1000) {
+//                token.mainProp = token.mainProp * 1_000_000;
+//            }
+//        }
+//    }
+
     function mint(
         address to,
         // uint32 mainProp,
         uint8 rarity
-    ) public onlyRole(TOKEN_MINTER_ROLE) nonReentrant returns (uint){
+    ) public onlyRole(TOKEN_MINTER_ROLE) nonReentrant returns (uint, uint128){
         require(to != address(0), "Address can not be zero");
         require(rarity < _rarityMainProp.length, "Wrong rarity");
         // require(mainProp <= _rarityMainProp[rarity], "Main Prop over rarity limit");
@@ -95,7 +104,7 @@ contract CoolControlBoard is
         _tokens[tokenId].mainProp = _rarityMainProp[rarity];// mainProp;
         _tokens[tokenId].createTimestamp = uint32(block.timestamp);
         _safeMint(to, tokenId);
-        return tokenId;
+        return (tokenId, _tokens[tokenId].mainProp);
     }
 
     function burn(uint _tokenId) public {
@@ -137,8 +146,8 @@ contract CoolControlBoard is
         uint _from,
         uint _to
     ) public view returns (TokensViewFront[] memory) {
+        require(_from <= _to, "_from should be less than or equal to _to");
         require(_to < balanceOf(_user), "Wrong max array value");
-        require((_to - _from) <= balanceOf(_user), "Wrong array range");
         TokensViewFront[] memory tokens = new TokensViewFront[](_to - _from + 1);
         uint index = 0;
         for (uint i = _from; i <= _to; i++) {

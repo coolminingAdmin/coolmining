@@ -83,21 +83,30 @@ contract CoolFan is
         return interfaceId == type(IERC721EnumerableUpgradeable).interfaceId || super.supportsInterface(interfaceId);
     }
 
+//    function fix(uint max) external onlyRole(DEFAULT_ADMIN_ROLE) {
+//        for(uint i = 0; i < max; i++){
+//            Token storage token = _tokens[i];
+//            if (token.mainProp < 1000) {
+//                token.mainProp = token.mainProp * 1_000_000;
+//            }
+//        }
+//    }
+
     function mint(
         address to,
         // uint32 mainProp,
         uint8 rarity
-    ) public onlyRole(TOKEN_MINTER_ROLE) nonReentrant  returns (uint){
+    ) public onlyRole(TOKEN_MINTER_ROLE) nonReentrant  returns (uint, uint128){
         require(to != address(0), "Address can not be zero");
         require(rarity < _rarityMainProp.length, "Wrong rarity");
         // require(mainProp <= _rarityMainProp[rarity], "Main Prop over rarity limit");
         _lastTokenId += 1;
         uint tokenId = _lastTokenId;
         _tokens[tokenId].rarity = rarity;
-        _tokens[tokenId].mainProp = _rarityMainProp[rarity];// mainProp;
+        _tokens[tokenId].mainProp = _rarityMainProp[rarity];
         _tokens[tokenId].createTimestamp = uint32(block.timestamp);
         _safeMint(to, tokenId);
-        return tokenId;
+        return (tokenId, _tokens[tokenId].mainProp);
     }
 
     function burn(uint _tokenId) public {

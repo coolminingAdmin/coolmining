@@ -9,17 +9,14 @@ contract CoolGas is Initializable,ERC20Upgradeable,AccessControlUpgradeable {
     function initialize (string memory name_, string memory symbol_, address  initialHolder_, uint256  initialSupply_) initializer public {
         __ERC20_init_unchained (name_, symbol_);
         __AccessControl_init_unchained();
-        __CoolGas_init_unchained(initialHolder_, initialSupply_);
+        _mint(initialHolder_, initialSupply_);
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _setRoleAdmin(MINTER_ROLE, DEFAULT_ADMIN_ROLE);
     }
-    function __CoolGas_init_unchained(address  initialHolder_, uint256  initialSupply_) initializer public {
-        _mint(initialHolder_, initialSupply_);
-    }
-    function mint(address account, uint256 amount) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function mint(address account, uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
         _mint(account, amount);
     }
-    function burn(address account, uint256 amount) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function burn(address account, uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
         _burn(account, amount);
     }
     function mintGas(address account, uint256 amount) external onlyRole(MINTER_ROLE) {
